@@ -1,2 +1,5 @@
-package SpringApp;public class InputsTypes {
+package SpringApp;
+
+public enum InputsTypes {
+    PASSWORD, EMAIL, NAME
 }

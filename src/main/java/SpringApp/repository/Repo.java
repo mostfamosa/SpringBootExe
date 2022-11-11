@@ -1,8 +1,8 @@
-package repository;
+package SpringApp.repository;
 
-import entity.User;
+import SpringApp.entity.User;
+import com.google.gson.Gson;
 import org.springframework.stereotype.Repository;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -15,18 +15,15 @@ public class Repo {
 
     private final File[] files;
     private static Repo repo;
-    private final Map<Integer, User> users;
-   // private final Gson gson;
+    private static Map<Integer, User> users;
+    private final Gson gson;
     private final String filepath;
 
     private Repo() {
         filepath = "src/main/resources/Users/";
-       // gson = new Gson();
+        gson = new Gson();
         files = new File("src/main/resources/Users/").listFiles();
-        users = new HashMap<>();
-        for (int i = 0; i < 30; i++) {
-            users.put(User.newRandomUser().getId(), User.newRandomUser());
-        }
+        users=loadAllUsers();
 
     }
 
@@ -37,69 +34,66 @@ public class Repo {
         return repo;
     }
 
-//    protected Map<Integer, User> getUsers() {
-//        return users;
-//    }
-//
-//    protected User getUserById(Integer id) {
-//        return users.get(id);
-//    }
+    public Map<Integer, User> getUsers() {
+        return users;
+    }
 
-//    protected boolean deleteUser(Integer id) {
-//        users.remove(id);
-//        File file = new File(filepath + id + ".json");
-//        return file.delete();
-//    }
+    public User getUserById(Integer id) {
+        return users.get(id);
+    }
 
-    protected void saveNewUser(User user) {
-        writeToFile("" + user.getId() + ".json", user);
+    public boolean deleteUser(Integer id) {
+        users.remove(id);
+        File file = new File(filepath + id + ".json");
+        return file.delete();
     }
 
     private void writeToFile(String filename, User content) {
         try (FileWriter writer = new FileWriter(filepath + filename)) {
-          //  gson.toJson(content, writer);
+            gson.toJson(content, writer);
             users.put(content.getId(), content);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-//    Map<Integer, User> loadAllUsers() {
-//        HashMap<Integer, User> users= new HashMap<>();
-//        for (File file : files) {
-//            User u = readFromFile(file.getName());
-//            assert u != null;
-//            users.put(u.getId(), u);
-//        }
-//        return users;
-//    }
+    Map<Integer, User> loadAllUsers() {
+        HashMap<Integer, User> users= new HashMap<>();
+        for (File file : files) {
+            User u = readFromFile(file.getName());
+            assert u != null;
+            users.put(u.getId(), u);
+        }
+        return users;
+    }
 
-//    private User readFromFile(String fileName) {
-//        try (FileReader reader = new FileReader(filepath + fileName)) {
-//           // User u = gson.fromJson(reader, User.class);
-//            reader.close();
-//            return u;
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    private User readFromFile(String fileName) {
+        try (FileReader reader = new FileReader(filepath + fileName)) {
+            User u = gson.fromJson(reader, User.class);
+            reader.close();
+            return u;
 
-//    protected void updateUser(User user) {
-//        try (FileWriter writer = new FileWriter(filepath + user.getId() + ".json")) {
-//            gson.toJson(user, writer);
-//            users.put(user.getId(), user);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-    protected int maximumId(){
+    public void updateUser(User user) {
+        try (FileWriter writer = new FileWriter(filepath + user.getId() + ".json")) {
+            gson.toJson(user, writer);
+            users.put(user.getId(), user);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int maximumId(){
         return users.keySet().stream().max(Integer::compareTo).orElse(0);
     }
 
     public User createUser(User user) {
+        writeToFile("" + user.getId() + ".json", user);
         users.put(user.getId(), user);
         return user;
     }

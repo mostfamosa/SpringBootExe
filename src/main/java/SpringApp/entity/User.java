@@ -1,35 +1,35 @@
-package entity;
+package SpringApp.entity;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-
 public class User {
 
-    private final int id;
+
     private  String email;
     private String name;
     private String password;
+    private int id;
 
-    User(String email, String name, String password, int id) {
+    public User() {
+
+    }
+    public User(String email, String name, String password, int id) {
+
+    }
+    public User(String email, String name, String password) {
         this.email = email;
         this.name = name;
         this.password = password;
-        this.id = id;
     }
-
-    public static User newRandomUser(){
-        return new User("mostfa@gmail.com","Mostafa","123321aA",
-                ThreadLocalRandom.current().nextInt(1,99));
-    }
-    protected String getName() {
+    public String getName() {
         return name;
     }
 
-    protected String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    protected String getEmail() {
+    public String getEmail() {
         return email;
     }
 
@@ -37,9 +37,11 @@ public class User {
         return id;
     }
 
-    protected void setName(String name) { this.name = name; }
+    public void setId(int id) { this.id = id; }
 
-    protected void setEmail(String email) { this.email = email; }
+    public void setName(String name) { this.name = name; }
+
+    public void setEmail(String email) { this.email = email; }
 
     public void setPassword(String password) { this.password = password; }
 
